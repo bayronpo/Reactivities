@@ -10,7 +10,6 @@ using Persistence;
 
 namespace DatingApp.API.Controllers
 {
-    [EnableCors("CorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
