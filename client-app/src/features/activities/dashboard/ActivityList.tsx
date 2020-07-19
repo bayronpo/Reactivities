@@ -1,17 +1,19 @@
-import React, { FC, SyntheticEvent } from 'react'
-import { Item, Image, Button, Label, Segment } from 'semantic-ui-react'
-import { IActivity } from '../../../app/models/activity'
+import React, { FC, SyntheticEvent, useContext } from 'react'
+import { Item, Button, Label, Segment } from 'semantic-ui-react'
+import { observer } from 'mobx-react-lite'
+import ActivityStore from '../../../app/stores/ActivityStore'
+import 'mobx-react-lite/batchingForReactDom'
 
 
 interface IProps {
-    activities: IActivity[];
-    selectActivity: (id: string) => void;
     deleteActivity : (event:SyntheticEvent<HTMLButtonElement>, id : string) => void;
     submitting: (boolean);
     target: (string)
 }
 
-export const ActivityList: FC<IProps> = ({ activities, selectActivity, deleteActivity, submitting, target }) => {
+const ActivityList: FC<IProps> = ({ deleteActivity, submitting, target }) => {
+    const activityStore = useContext(ActivityStore);
+    const {activities, selectActivity} = activityStore;
     return (
         <Segment clearing>
             <Item.Group divided>
@@ -23,7 +25,7 @@ export const ActivityList: FC<IProps> = ({ activities, selectActivity, deleteAct
                             <Item.Description>
                                 <div>{activity.description}</div>
                                 <div>{activity.city}, {activity.venue}</div>
-                            </Item.Description>
+                            </Item.Description> 
                             <Item.Extra>
                                 <Button onClick={() => selectActivity(activity.id)} floated='right' content='View' color='blue' />
                                 <Button onClick={(e) => deleteActivity(e, activity.id)} floated='right' content='Delete' color='red' loading={target === activity.id && submitting} name={activity.id}/>
@@ -36,3 +38,5 @@ export const ActivityList: FC<IProps> = ({ activities, selectActivity, deleteAct
         </Segment>
     )
 }
+
+export default observer (ActivityList);
