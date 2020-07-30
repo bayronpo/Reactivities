@@ -13,9 +13,7 @@ interface DetailParams {
   id: string;
 }
 
-const ActivityDetails: FC<RouteComponentProps<DetailParams>> = ({
-  match,
-}) => {
+const ActivityDetails: FC<RouteComponentProps<DetailParams>> = ({ match }) => {
   const activityStore = useContext(ActivityStore);
   const { activity, loadActivity, loadingInitial } = activityStore;
 
@@ -27,11 +25,15 @@ const ActivityDetails: FC<RouteComponentProps<DetailParams>> = ({
     return <LoadingComponent content="Loading activity..." />;
   }
 
+  if (!activity) {
+    return <h2>Acitivity not found</h2>;
+  }
+
   return (
     <Grid>
       <GridColumn width={10}>
-        <ActivityDetailedHeader activity={activity}/>
-        <ActivityDetailedInfo activity={activity}/>
+        <ActivityDetailedHeader activity={activity} />
+        <ActivityDetailedInfo activity={activity} />
         <ActivityDetailedChat />
       </GridColumn>
       <GridColumn width={6}>
