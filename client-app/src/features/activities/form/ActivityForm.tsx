@@ -1,9 +1,6 @@
 import React, { FC, useState, useContext, useEffect } from "react";
 import { Segment, Form, Button, Grid } from "semantic-ui-react";
-import {
-  ActivityFormValues,
-} from "../../../app/models/activity";
-import ActivityStore from "../../../app/stores/ActivityStore";
+import { ActivityFormValues } from "../../../app/models/activity";
 import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router-dom";
 import { Form as FinalForm, Field } from "react-final-form";
@@ -14,20 +11,28 @@ import { category } from "../../../app/common/Options/CategoryOptions";
 import DateInput from "../../../app/common/form/DateInput";
 import { combineDateAndTime } from "../../../app/common/util/util";
 import { v4 as uuid } from "uuid";
-import {combineValidators, isRequired, composeValidators, hasLengthGreaterThan} from 'revalidate';
+import {
+  combineValidators,
+  isRequired,
+  composeValidators,
+  hasLengthGreaterThan,
+} from "revalidate";
+import { RootStoreContext } from "../../../app/stores/rootStore";
 
 const validate = combineValidators({
-  title: isRequired({message: 'The event title is required'}),
-  category: isRequired('Category'),
+  title: isRequired({ message: "The event title is required" }),
+  category: isRequired("Category"),
   description: composeValidators(
-    isRequired('Description'),
-    hasLengthGreaterThan(4)({message: 'Description needs to be at least 5 characters'})
+    isRequired("Description"),
+    hasLengthGreaterThan(4)({
+      message: "Description needs to be at least 5 characters",
+    })
   )(),
-  city: isRequired('City'),
-  venue: isRequired('Venue'),
-  date: isRequired('Date'),
-  time: isRequired('Time')
-})
+  city: isRequired("City"),
+  venue: isRequired("Venue"),
+  date: isRequired("Date"),
+  time: isRequired("Time"),
+});
 
 interface DetailParms {
   id: string;
@@ -37,13 +42,13 @@ const ActivityForm: FC<RouteComponentProps<DetailParms>> = ({
   match,
   history,
 }) => {
-  const activityStore = useContext(ActivityStore);
+  const rootStore = useContext(RootStoreContext);
   const {
     createActivity,
     editActivity,
     submitting,
     loadActivity,
-  } = activityStore;
+  } = rootStore.activityStore;
 
   const [activity, setActivity] = useState(new ActivityFormValues());
   const [loading, setLoading] = useState(false);
@@ -79,7 +84,7 @@ const ActivityForm: FC<RouteComponentProps<DetailParms>> = ({
       <Grid.Column width={10}>
         <Segment clearing>
           <FinalForm
-          validate={validate}
+            validate={validate}
             initialValues={activity}
             onSubmit={handleFinalFormSubmit}
             render={({ handleSubmit, invalid, pristine }) => (
